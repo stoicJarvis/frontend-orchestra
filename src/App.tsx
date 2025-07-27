@@ -1,6 +1,17 @@
+import './styles/tailwind.css';
+import { BrowserRouter } from 'react-router-dom';
+import { Navbar } from './components/Navbar';
+import { ApplicationRoutes } from './components/ApplicationRoutes';
+import { LIGHT_THEME } from './utils/theme.palette';
+
 function App() {
   return (
-    <h1>Hello</h1>
+    <div style={{ backgroundColor: LIGHT_THEME.background }} className="min-h-screen">
+      <BrowserRouter>
+        <Navbar />
+        <ApplicationRoutes />
+      </BrowserRouter>
+    </div>
   );
 }
 
