@@ -1,14 +1,23 @@
 import { lazy, Suspense } from "react";
-import { PRODUCT_SKELETON_COUNT, PRODUCTS_API } from "../utils/constansts";
-import { useGetData } from "../hooks/useGetData";
+import { DATA_GARBAGE_TIME, DATA_STALE_TIME, PRODUCT_SKELETON_COUNT, PRODUCTS_API } from "../utils/constansts";
 import { IProductsResponse } from "../interfaces/IProduct";
 import ProductGridSkeleton from "../components/ProductGridSkeleton";
+import { useQuery } from "@tanstack/react-query";
 
 const ProductsComponent = lazy(() => import("../components/ProductsComponent"));
 const ErrorComponent = lazy(() => import("../components/ErrorComponent"));
 
-export default function LazyLoadin() {
-    const { isFetching, apiResult, error } = useGetData<IProductsResponse>(PRODUCTS_API);
+export default function LazyLoading() {
+    const {isLoading: isFetching, data: apiResult, error} = useQuery<IProductsResponse>({
+        queryKey: ["products"],
+        queryFn: () => 
+            fetch(PRODUCTS_API)
+                .then(res => {
+                    if (!res.ok) throw new Error("Failed to fetch products"); return res.json() 
+                }),
+        staleTime: DATA_STALE_TIME,
+        gcTime: DATA_GARBAGE_TIME
+    });
 
     return (
         <div className="m-6">
